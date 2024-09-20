@@ -1,0 +1,9 @@
+.vscode/
+lib/
+res/
+build/
+notations.txt
+engine.wasm
+engine.js
+run.sh
+
