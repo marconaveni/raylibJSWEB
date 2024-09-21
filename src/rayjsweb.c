@@ -64,10 +64,6 @@ EXTERN EMSCRIPTEN_KEEPALIVE void draw_rectangle(int posX, int posY, int width, i
 EXTERN EMSCRIPTEN_KEEPALIVE void draw_texture(Texture2D* texturePtr, int posX, int posY)
 {
     DrawTexture(*texturePtr,  posX,  posY, WHITE); 
-
-    // EM_ASM({ 
-    //     console.log('cpp  ptr ' + UTF8ToString($0) + '  internal ' + UTF8ToString($1));
-    // }, x , texture.format );
 }
 
 EXTERN EMSCRIPTEN_KEEPALIVE void end_drawing()
@@ -116,49 +112,3 @@ void Update(void)
 {
     // todo
 }
-
-/*
-emcc -o game.html hello.cpp -Os -Wall ./lib/libraylib.a -I. -Iinclude -L. -Llib -s USE_GLFW=3 -s ASYNCIFY --shell-file C:/Programas/emsdk/upstream/emscripten/src/shell.html -DPLATFORM_WEB --preload-file ./res -sFORCE_FILESYSTEM=1  -sEXPORTED_RUNTIME_METHODS='["cwrap","ccall","getValue","setValue"]' -sEXPORTED_FUNCTIONS='["_malloc","_free","_main"]'   
-
-
-
-
--sEXPORTED_FUNCTIONS='["_int_sqrt","_init_window","_begin_drawing","_clear_background","_draw_rectangle","_end_drawing"]'  -- isso desabilita main() e marca as funções como mortas
-
-
-
-
-    //const char *teste = "teste";
-    EM_ASM({
-        FS.mkdir('/res');
-        FS.mount(MEMFS, {}, '/res');
-        // data_callback(0, 0);
-
-        fetch('/snes.png') // Certifique-se de que o caminho para o arquivo está correto
-            .then(function(response) { return response.arrayBuffer(); })
-            .then(function(data) {
-                var fileData = new Uint8Array(data);
-
-                // Escreva o arquivo no sistema de arquivos em memória
-                FS.writeFile('/res/snes.png', fileData);
-
-                console.log('Arquivo carregado e salvo em /res/snes.png');
-                console.log(UTF8ToString($0));
-
-                // load_data_wrapped(10, 20);
-            })
-            .catch(function(error) {
-                console.error('Erro ao carregar o arquivo:', error);
-            }); 
-    }); 
-
-
-
-
- EM_JS(void, call_alert, (), {
-  alert('hello world!');
-  throw 'all done';
-}); 
-
-
-*/
