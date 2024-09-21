@@ -1,9 +1,8 @@
 .vscode/
 lib/
 res/
-build/
+release/
 notations.txt
 engine.wasm
 engine.js
-run.sh
 
