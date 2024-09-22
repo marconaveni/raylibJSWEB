@@ -1,4 +1,5 @@
 import ModuleEngine from "./engine.js";
+import { Texture2D, Color } from "./structs.js";
 
 let Module;
 
@@ -25,7 +26,7 @@ async function boot(assetsPreload = []) {
         load_texture = Module.cwrap('load_texture', 'number', ['string']);
         init_window = Module.cwrap('init_window', null, ['number', 'number', 'string']);
         begin_drawing = Module.cwrap('begin_drawing', null, null);
-        clear_background = Module.cwrap('clear_background', null, null);
+        clear_background = Module.cwrap('clear_background', null, ['number', 'number', 'number', 'number']);
         draw_rectangle = Module.cwrap('draw_rectangle', null, ['number', 'number', 'number', 'number']);
         draw_texture = Module.cwrap('draw_texture', null, ['number', 'number', 'number']);
         end_drawing = Module.cwrap('end_drawing', null, null);
@@ -91,13 +92,13 @@ export function initWindow(width = 800, height = 600, title = "web") {
 export function loadTexture(fileName) {
 
     const texturePtr = load_texture(fileName); // Chamar a função e obter o ponteiro para a struct        
-    const texture = {  // Ler os valores da struct
-        id: Module.getValue(texturePtr, 'i32'),
-        width: Module.getValue(texturePtr + 4, 'i32'),
-        height: Module.getValue(texturePtr + 8, 'i32'),
-        mipmaps: Module.getValue(texturePtr + 12, 'i32'),
-        format: Module.getValue(texturePtr + 16, 'i32')
-    };
+    const texture = new Texture2D(  // Ler os valores da struct
+        Module.getValue(texturePtr, 'i32'),
+        Module.getValue(texturePtr + 4, 'i32'),
+        Module.getValue(texturePtr + 8, 'i32'),
+        Module.getValue(texturePtr + 12, 'i32'),
+        Module.getValue(texturePtr + 16, 'i32')
+    );
 
     return texture;
 }
@@ -111,7 +112,7 @@ export function drawTexture(texture, posX, posY) {
     // Alocando memória para a struct Texture2D
     let texturePtr = Module._malloc(20); // 5 ints * 4 bytes cada
 
-   
+
     Module.setValue(texturePtr, texture.id, 'i32');  // Copiando os valores da struct para a memória alocada
     Module.setValue(texturePtr + 4, texture.width, 'i32');
     Module.setValue(texturePtr + 8, texture.height, 'i32');
@@ -124,8 +125,8 @@ export function drawTexture(texture, posX, posY) {
     Module._free(texturePtr);
 }
 
-export function clearBackground() {
-    clear_background();
+export function clearBackground(color = Color.raywhite) {
+    clear_background(color.r, color.g, color.b, color.a);
 }
 
 export function beginDrawing() {

@@ -15,15 +15,13 @@
 
 void Update(void); // Update and Draw one frame
 
-//static variables
+// static variables
 Texture texture;
 
-EXTERN EMSCRIPTEN_KEEPALIVE Texture* load_texture(const char* name)
+EXTERN EMSCRIPTEN_KEEPALIVE Texture *load_texture(const char *name)
 {
-    const char* finalPath = TextFormat("working/%s",name);
-    EM_ASM({ 
-        console.log(UTF8ToString($0));
-    },name);
+    const char *finalPath = TextFormat("working/%s", name);
+    EM_ASM({ console.log(UTF8ToString($0)); }, name);
 
     texture = LoadTexture(finalPath);
 
@@ -31,14 +29,11 @@ EXTERN EMSCRIPTEN_KEEPALIVE Texture* load_texture(const char* name)
     return &texture;
 }
 
-EXTERN EMSCRIPTEN_KEEPALIVE void load_asset_memory(const int* data, int dataLength, const char* name)
+EXTERN EMSCRIPTEN_KEEPALIVE void load_asset_memory(const int *data, int dataLength, const char *name)
 {
-    EM_ASM({ 
-            
-        FS.writeFile('working/' + UTF8ToString($2) , HEAPU8.subarray($0, $0 + $1)); // Escreva o arquivo no sistema de arquivos em memória
-        console.log(UTF8ToString($2));
-
-    },data, dataLength, name);
+    EM_ASM({
+        FS.writeFile('working/' + UTF8ToString($2), HEAPU8.subarray($0, $0 + $1)); // Escreva o arquivo no sistema de arquivos em memória
+        console.log(UTF8ToString($2)); }, data, dataLength, name);
 }
 
 EXTERN EMSCRIPTEN_KEEPALIVE void init()
@@ -48,11 +43,11 @@ EXTERN EMSCRIPTEN_KEEPALIVE void init()
         FS.mount(MEMFS, {}, '/working');
     });
 
-    //emscripten_run_script("start()");
-    //emscripten_set_main_loop(Update, 0, 1);
+    // emscripten_run_script("start()");
+    // emscripten_set_main_loop(Update, 0, 1);
 }
 
-EXTERN EMSCRIPTEN_KEEPALIVE void init_window(int width, int height, const char* title)
+EXTERN EMSCRIPTEN_KEEPALIVE void init_window(int width, int height, const char *title)
 {
     InitWindow(width, height, title);
 }
@@ -62,9 +57,10 @@ EXTERN EMSCRIPTEN_KEEPALIVE void begin_drawing()
     BeginDrawing();
 }
 
-EXTERN EMSCRIPTEN_KEEPALIVE void clear_background()
+EXTERN EMSCRIPTEN_KEEPALIVE void clear_background(int r, int g, int b, int a)
 {
-    ClearBackground(RAYWHITE);
+    const Color color = {(unsigned char)r, (unsigned char)g, (unsigned char)b, (unsigned char)a};
+    ClearBackground(color);
 }
 
 EXTERN EMSCRIPTEN_KEEPALIVE void draw_rectangle(int posX, int posY, int width, int height)
@@ -72,16 +68,15 @@ EXTERN EMSCRIPTEN_KEEPALIVE void draw_rectangle(int posX, int posY, int width, i
     DrawRectangle(posX, posY, width, height, RED);
 }
 
-EXTERN EMSCRIPTEN_KEEPALIVE void draw_texture(Texture2D* texturePtr, int posX, int posY)
+EXTERN EMSCRIPTEN_KEEPALIVE void draw_texture(Texture2D *texturePtr, int posX, int posY)
 {
-    DrawTexture(*texturePtr,  posX,  posY, WHITE); 
+    DrawTexture(*texturePtr, posX, posY, WHITE);
 }
 
 EXTERN EMSCRIPTEN_KEEPALIVE void end_drawing()
 {
     EndDrawing();
 }
-
 
 #define PLATFORM_WEB 1
 
