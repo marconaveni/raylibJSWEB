@@ -39,7 +39,18 @@ EXTERN EMSCRIPTEN_KEEPALIVE void load_asset_memory(const int* data, int dataLeng
         console.log(UTF8ToString($2));
 
     },data, dataLength, name);
-} 
+}
+
+EXTERN EMSCRIPTEN_KEEPALIVE void init()
+{
+    EM_ASM({
+        FS.mkdir('/working');
+        FS.mount(MEMFS, {}, '/working');
+    });
+
+    //emscripten_run_script("start()");
+    //emscripten_set_main_loop(Update, 0, 1);
+}
 
 EXTERN EMSCRIPTEN_KEEPALIVE void init_window(int width, int height, const char* title)
 {
@@ -79,25 +90,6 @@ int main(void)
 
 #if defined(PLATFORM_WEB)
 
-
-
-    EM_ASM({
-        FS.mkdir('/working');
-        FS.mount(MEMFS, {}, '/working');
-        load_asset_memory = Module.cwrap('load_asset_memory', null, ['number', 'number', 'string']);
-        load_texture = Module.cwrap('load_texture', 'number', ['string']);
-        init_window = Module.cwrap('init_window', null, ['number', 'number', 'string']);
-        begin_drawing = Module.cwrap('begin_drawing', null, null);
-        clear_background = Module.cwrap('clear_background', null, null);
-        draw_rectangle = Module.cwrap('draw_rectangle', null, ['number', 'number', 'number', 'number']);
-        draw_texture = Module.cwrap('draw_texture', null, ['number', 'number', 'number']);
-        end_drawing = Module.cwrap('end_drawing', null, null);
-    });
-
-    emscripten_run_script("start()");
-
-
-    emscripten_set_main_loop(Update, 0, 1);
 #else
     SetTargetFPS(60);
     while (!WindowShouldClose())

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page</title>
+    <style>
+        body {
+            font-family: arial;
+            margin: 0;
+            padding: none;
+        }
+
+        canvas {
+            position: absolute;
+            margin: auto;
+            inset: 0;
+            /* sets left, right, top & bottom to 0 */
+            border: 1px solid #000;
+            background-color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+
+<script type="module">
+    import { Raylib, initWindow, clearBackground, beginDrawing, drawTexture, endDrawing, loadTexture, drawRectangle } from "./src/core.js";
+
+
+    (async () => {
+
+        const Module = await Raylib(["res/snes.png", "res/zz.png", "res/rhino.png", "res/bunny.png"]);
+        console.log(Module);
+        initWindow(900, 500, "janela");
+
+        let x = 0;
+        let y = 0;
+        let textureDraw = loadTexture("bunny.png");
+
+        requestAnimationFrame(gameLoop);
+
+        async function gameLoop() {
+
+
+            x += 1 //* deltaTimeMultiplier;
+            y += 1 //* deltaTimeMultiplier;
+            if (x > 800) {
+                x = -100;
+            }
+
+            clearBackground();
+
+            beginDrawing();
+            for (let index = 0; index < 1; index++) {
+                drawTexture(textureDraw, x, 100);
+                drawRectangle(x, 300, 100, 100);
+            }
+
+            endDrawing();
+            requestAnimationFrame(gameLoop);
+        }
+
+
+    })();
+
+</script>
+
+</html>

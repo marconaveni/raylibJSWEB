@@ -1,8 +1,8 @@
 .vscode/
 lib/
 res/
-release/
+build/
 notations.txt
 engine.wasm
 engine.js
-
+*.map
